@@ -1,8 +1,12 @@
-import React from 'react'
+import { UserButton } from "@clerk/nextjs";
 
 const Page = () => {
   return (
-    <p>Pagina con protección</p>
+    <div className="">
+      <UserButton
+      afterSignOutUrl ="/" />
+      prueba
+    </div>
   )
 }
 
