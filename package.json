@@ -38,6 +38,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "prisma": "^6.1.0",
     "shadcn-ui": "^0.9.4"
   }
 }
