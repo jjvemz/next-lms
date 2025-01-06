@@ -36,10 +36,13 @@ const CreatePage = () => {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         console.log("los valores ingresados para el curso: ",values);
         try{
-            const res = await axios.post("api/course", values);
+            const res = await axios.post("/api/courses", values, {
+                headers: { "Content-Type": "application/json" },
+            });
             router.push(`/teacher/courses/${res.data.id}`);
+            toast.success("Curso creado exitosamente")
         }catch(error){
-            toast.error("Error al crear el curso: ", error)
+            toast.error("Error al crear el curso")
             console.error("Error al crear el curso: ",error);
         }
     };

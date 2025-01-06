@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -23,11 +22,12 @@ model Category{
 model Course{
   id String @id @default(uuid())
   userId String
-  title String @db.Text
+  title String 
   description String? @db.Text
   imageUrl String? @db.Text
   price Int?
-
+  isPublic  Boolean @default(false)
+  
   categoryId String?
   category Category? @relation(fields: [categoryId], references: [id])
   attachments Attachment[]
