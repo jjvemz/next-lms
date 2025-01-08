@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { Iconbadge } from "@/components/icon-badge";
 import { LayoutDashboard } from "lucide-react";
 import TitleForm from "@/app/(dashboard)/_components/title-form";
+import DescriptionForm from "@/app/(dashboard)/_components/description-form";
 
 const CourseIdPage = async ({
     params
@@ -16,9 +17,12 @@ const CourseIdPage = async ({
     if( !userId ){
         return redirect("/");
     }
+
+    const courseId = params.courseId;
+
     const course = await db.course.findUnique({
         where:{
-            id: params.courseId
+            id: courseId
         }
     })
 
@@ -60,7 +64,11 @@ const CourseIdPage = async ({
                 </div>
                 <TitleForm 
                 initialData ={course}
-                courseId={course.courseId}
+                courseId={course.id}
+                />
+                <DescriptionForm 
+                initialData ={course}
+                courseId={course.id}
                 />
             </div>
 
@@ -70,4 +78,3 @@ const CourseIdPage = async ({
 }
 
 export default CourseIdPage
-
