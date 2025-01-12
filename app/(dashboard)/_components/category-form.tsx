@@ -16,28 +16,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Course } from "@prisma/client";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import  { useRouter } from "next/navigation";
 
-interface DescriptionFormProps {
-  initialData: {
-    description: string;
-  };
+interface categoryFormProps {
+  initialData: Course;
   courseId: string;
+  options: { label: string; value: string; }[];
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, 
-    { message: "La descripción es requerida" }
-  ),
+  categoryId: z.string().min(1),
 });
 
-const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
+const CategoryForm = ({ initialData, courseId }: categoryFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || "",
+      categoryId: initialData?.categoryId || "",
     },
   });
 
@@ -62,10 +60,10 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
         <FormField
           control={form.control}
-          name="description"
+          name="categoryId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Descripción del curso</FormLabel>
+              <FormLabel>Categoría del curso</FormLabel>
               <FormControl>
                 <Textarea
                   disabled={isSubmitting}
@@ -90,4 +88,4 @@ const DescriptionForm = ({ initialData, courseId }: DescriptionFormProps) => {
   );
 };
 
-export default DescriptionForm;
+export default CategoryForm;
