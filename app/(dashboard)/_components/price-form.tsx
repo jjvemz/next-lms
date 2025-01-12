@@ -11,33 +11,32 @@ import {
   FormField,
   FormItem,
   FormMessage,
-  FormLabel
+  FormLabel,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Course } from "@prisma/client";
+import { cn } from "@/lib/utils";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import  { useRouter } from "next/navigation";
-import { Combobox } from "./combobox";
+import { useRouter } from "next/navigation";
+import { Course } from "@prisma/client";
+import { Input } from "@/components/ui/input";
 
-interface categoryFormProps {
-  initialData: Course;
+interface PriceFormProps {
+  initialData: Course
   courseId: string;
-  options: { label: string; value: string; }[];
 }
 
 const formSchema = z.object({
-  categoryId: z.string().min(1),
+  price: z.coerce.number(),
 });
 
-const CategoryForm = ({ initialData, courseId, options }: categoryFormProps) => {
+const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      categoryId: initialData?.categoryId || "",
+      price: initialData?.price || undefined,
     },
   });
 
@@ -49,27 +48,25 @@ const CategoryForm = ({ initialData, courseId, options }: categoryFormProps) => 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Categoría del curso actualizado");
+      toast.success("Precio del curso actualizado");
       router.refresh();
     } catch (error) {
-      console.error("Error al actualizar la categoría del curso:", error);
-      toast.error("Error al actualizar la categoría del curso");
+      console.error("Error al actualizar el Precio del curso:", error);
+      toast.error("Error al actualizar el precio del curso");
     }
   };
-
-  const selectedOption = options.find((option) => option.value === initialData.categoryId)
 
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Categoría del curso
+        Precio del curso
         <Button onClick={toggleEdit} variant="ghost">
           {isEditing ? (
             <></>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Editar categoría
+              Editar descripción
             </>
           )}
         </Button>
@@ -79,10 +76,13 @@ const CategoryForm = ({ initialData, courseId, options }: categoryFormProps) => 
         <p
           className={cn(
             "text-sm mt-2",
-            !initialData.categoryId && "text-slate-500 italic"
+            !initialData.price && "text-slate-500 italic"
           )}
         >
-          {selectedOption?.label || "No tiene categoría"}
+          { initialData.price
+          ? formatPrice(initialData.price)
+          : "Sin precio"
+        }
         </p>
       ) : (
         <Form {...form}>
@@ -92,14 +92,18 @@ const CategoryForm = ({ initialData, courseId, options }: categoryFormProps) => 
           >
             <FormField
               control={form.control}
-              name="categoryId"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                   <Combobox
-                    options={...options}
-                    {...field}
-                   />
+                    <Input
+                      type="number"
+                      step="100.000"
+                      className="bg-white"
+                      disabled={isSubmitting}
+                      placeholder="Ingrese el precio del curso"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,4 +124,4 @@ const CategoryForm = ({ initialData, courseId, options }: categoryFormProps) => 
   );
 };
 
-export default CategoryForm;
+export default PriceForm;
